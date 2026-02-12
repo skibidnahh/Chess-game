@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cờ Vua AI - Hệ thống ELO</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Modal thông báo kết quả -->
+    <div id="gameResultModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Kết quả</h2>
+            </div>
+            <div class="modal-body">
+                <div id="modalIcon" class="result-icon"></div>
+                <p id="modalMessage"></p>
+                <div class="elo-change">
+                    <div class="elo-row">
+                        <span>ELO của bạn:</span>
+                        <span id="modalPlayerElo" class="elo-value"></span>
+                    </div>
+                    <div class="elo-row">
+                        <span>ELO đối thủ:</span>
+                        <span id="modalOpponentElo" class="elo-value"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" onclick="closeModal(); newGame();">Ván mới</button>
+                <button class="btn-secondary" onclick="closeModal();">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+```
+<div class="container">
+    <h1>♔ Cờ Vua AI - Hệ Thống ELO ♚</h1>
+    
+    <div class="settings-section">
+        <h3>🎨 Kiểu quân cờ</h3>
+        <div class="piece-style-selector">
+            <div class="style-option active" onclick="setPieceStyle('unicode')">
+                <div style="font-size: 30px;">♔♞</div>
+                <div style="font-size: 0.9em; margin-top: 5px;">Unicode</div>
+            </div>
+            <div class="style-option" onclick="setPieceStyle('svg')">
+                <div style="font-size: 30px;">⛃⛀</div>
+                <div style="font-size: 0.9em; margin-top: 5px;">SVG</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="opponent-selector">
+        <h3>🎯 Chọn đối thủ</h3>
+        <div class="opponent-tabs">
+            <button class="tab-btn active" onclick="switchTab('bot')">Bot ELO</button>
+            <button class="tab-btn" onclick="switchTab('custom')">Chatbot API</button>
+        </div>
+
+        <!-- Bot ELO Tab -->
+        <div id="bot-tab" class="tab-content active">
+            <div class="info-card" style="margin: 0;">
+                <h4 style="margin-bottom: 10px;">⚙️ Độ khó Bot</h4>
+                <div class="difficulty-selector">
+                    <button class="difficulty-btn active" onclick="setBotDifficulty('easy')">Dễ</button>
+                    <button class="difficulty-btn" onclick="setBotDifficulty('medium')">Trung bình</button>
+                    <button class="difficulty-btn" onclick="setBotDifficulty('hard')">Khó</button>
+                </div>
+                <p class="help-text" style="color: white; margin-top: 10px;">
+                    Bot tích hợp sẵn, không cần API
+                </p>
+            </div>
+        </div>
+
+        <!-- Custom Chatbot Tab -->
+        <div id="custom-tab" class="tab-content">
+            <div class="api-config">
+                <div class="input-group">
+                    <label>Loại API:</label>
+                    <select id="chatbotType" onchange="updateApiPlaceholder()">
+                        <option value="openai">ChatGPT (OpenAI)</option>
+                        <option value="anthropic">Claude (Anthropic)</option>
+                        <option value="gemini">Gemini (Google)</option>
+                        <option value="grok">Grok (xAI)</option>
+                        <option value="custom">Tùy chỉnh</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>API Key:</label>
+                    <input type="password" id="customApiKey" placeholder="Nhập API key...">
+                </div>
+
+                <div class="input-group" id="customEndpointGroup" style="display: none;">
+                    <label>API Endpoint:</label>
+                    <input type="text" id="customEndpoint" placeholder="https://api.example.com/v1/chat">
+                </div>
+
+                <div class="input-group" id="customModelGroup" style="display: none;">
+                    <label>Model:</label>
+                    <input type="text" id="customModel" placeholder="gpt-4">
+                </div>
+
+                <button onclick="saveCustomApi()" class="btn-primary" style="width: 100%; font-size: 0.95em;">💾 Lưu</button>
+                <div id="customApiStatus" class="api-status" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <div class="board-section">
+            <div class="board-wrapper">
+                <div id="chessboard" class="chessboard"></div>
+            </div>
+            <div id="thinking" class="thinking" style="display: none;">
+                🤔 Đang suy nghĩ...
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-card">
+                <h3>📊 ELO Rating</h3>
+                <div class="elo-display">
+                    <span>Bạn:</span>
+                    <strong id="playerElo">1200</strong>
+                </div>
+                <div class="elo-display">
+                    <span>Đối thủ:</span>
+                    <strong id="opponentElo">1200</strong>
+                </div>
+                <div class="elo-display">
+                    <span>Thắng:</span>
+                    <strong id="wins">0</strong>
+                </div>
+                <div class="elo-display">
+                    <span>Thua:</span>
+                    <strong id="losses">0</strong>
+                </div>
+                <div class="elo-display">
+                    <span>Hòa:</span>
+                    <strong id="draws">0</strong>
+                </div>
+            </div>
+
+            <div class="status" id="gameStatus">
+                Lượt của Trắng
+            </div>
+
+            <div class="controls">
+                <button class="btn-primary" onclick="newGame()">🎮 Ván mới</button>
+                <button class="btn-reset" onclick="resetElo()">🔄 Reset ELO</button>
+            </div>
+
+            <div class="move-history">
+                <h3>📜 Lịch sử</h3>
+                <div id="moveHistory" class="move-history-list"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="pieces.js"></script>
+<script src="game.js"></script>
+<script src="bot.js"></script>
+<script src="api.js"></script>
+<script src="ui.js"></script>
+```
+
+</body>
+</html>
