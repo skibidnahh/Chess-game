@@ -5,6 +5,39 @@ let wins = parseInt(localStorage.getItem(‘wins’)) || 0;
 let losses = parseInt(localStorage.getItem(‘losses’)) || 0;
 let draws = parseInt(localStorage.getItem(‘draws’)) || 0;
 
+// Initialize when page loads
+function initializeApp() {
+const savedType = localStorage.getItem(‘customApiType’);
+const savedEndpoint = localStorage.getItem(‘customEndpoint’);
+const savedModel = localStorage.getItem(‘customModel’);
+
+```
+if (savedType) {
+    document.getElementById('chatbotType').value = savedType;
+    customConfig.type = savedType;
+    updateApiPlaceholder();
+}
+
+if (customConfig.apiKey) {
+    document.getElementById('customApiKey').value = customConfig.apiKey;
+}
+
+if (savedEndpoint) {
+    document.getElementById('customEndpoint').value = savedEndpoint;
+    customConfig.endpoint = savedEndpoint;
+}
+
+if (savedModel) {
+    document.getElementById('customModel').value = savedModel;
+    customConfig.model = savedModel;
+}
+
+updateEloDisplay();
+initBoard();
+```
+
+}
+
 // Show game result modal
 function showGameResultModal(winner) {
 const modal = document.getElementById(‘gameResultModal’);
@@ -239,33 +272,9 @@ updateEloDisplay();
 }
 }
 
-window.onload = function() {
-const savedType = localStorage.getItem(‘customApiType’);
-const savedEndpoint = localStorage.getItem(‘customEndpoint’);
-const savedModel = localStorage.getItem(‘customModel’);
-
-```
-if (savedType) {
-    document.getElementById('chatbotType').value = savedType;
-    customConfig.type = savedType;
-    updateApiPlaceholder();
+// Auto-initialize when page loads
+if (document.readyState === ‘loading’) {
+document.addEventListener(‘DOMContentLoaded’, initializeApp);
+} else {
+initializeApp();
 }
-
-if (customConfig.apiKey) {
-    document.getElementById('customApiKey').value = customConfig.apiKey;
-}
-
-if (savedEndpoint) {
-    document.getElementById('customEndpoint').value = savedEndpoint;
-    customConfig.endpoint = savedEndpoint;
-}
-
-if (savedModel) {
-    document.getElementById('customModel').value = savedModel;
-    customConfig.model = savedModel;
-}
-
-initBoard();
-```
-
-};
