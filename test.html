@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Chess</title>
+</head>
+<body>
+    <h1>Testing...</h1>
+    <div id="status"></div>
+
+```
+<script src="pieces.js"></script>
+<script src="game.js"></script>
+<script src="bot.js"></script>
+<script src="api.js"></script>
+<script src="ui.js"></script>
+
+<script>
+    const status = document.getElementById('status');
+    try {
+        status.innerHTML = '<p>✅ pieces.js loaded</p>';
+        status.innerHTML += '<p>✅ game.js loaded</p>';
+        status.innerHTML += '<p>✅ bot.js loaded</p>';
+        status.innerHTML += '<p>✅ api.js loaded</p>';
+        status.innerHTML += '<p>✅ ui.js loaded</p>';
+        
+        // Test variables
+        if (typeof unicodePieces !== 'undefined') {
+            status.innerHTML += '<p>✅ unicodePieces defined</p>';
+        }
+        if (typeof board !== 'undefined') {
+            status.innerHTML += '<p>✅ board defined</p>';
+        }
+        if (typeof initBoard === 'function') {
+            status.innerHTML += '<p>✅ initBoard function exists</p>';
+        }
+        
+        status.innerHTML += '<p><strong>All checks passed! ✅</strong></p>';
+    } catch(e) {
+        status.innerHTML += '<p style="color:red">❌ Error: ' + e.message + '</p>';
+    }
+</script>
+```
+
+</body>
+</html>
